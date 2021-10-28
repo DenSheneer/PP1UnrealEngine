@@ -13,7 +13,7 @@ ADamagableActor::ADamagableActor()
 
 void ADamagableActor::TakeAttack()
 {
-	// TODO: perform health reduction logic
+	// you'd perform health reduction logic *here*
 	onTakeAttack();
 }
 

@@ -26,14 +26,12 @@ void AFPSCharacter::fireWeapon()
 	ADamagableActor* hitActor = Cast<ADamagableActor>(hit.Actor);
 	if (hitActor && hitActor->isAttackable)
 	{
-		std::cout << "this was true 2\n";
 		hitActor->TakeAttack();
 	}
 }
 
 FHitResult AFPSCharacter::instantShot()
 {
-	return FHitResult();
 	FVector cameraPosition;
 	FRotator cameraRotation;
 	FVector endTrace = FVector(0,0,0);
