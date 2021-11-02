@@ -24,7 +24,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	FHitResult instantShot();
+	FHitResult instantShot();	
 	
 
 public:	
