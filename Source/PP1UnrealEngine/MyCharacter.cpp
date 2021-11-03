@@ -13,24 +13,26 @@ AMyCharacter::AMyCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	//	Instantiating class Components
-	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	// Instantiating your class Components
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 
-	//	Set the location and rotation of the Character Mesh Transform
+	//Set the location and rotation of the Character Mesh Transform
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FQuat(FRotator(0.0f, -90.0f, 0.0f)));
 
-	// Attaching the class Components to the default character's Skeletal Mesh Component.
-	SpringArmComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
+	// Attaching your class Components to the default character's Skeletal Mesh Component.
+	SpringArmComp->SetupAttachment(this->GetMesh());
+	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 
-	//	Setting class variables of the spring arm
+	//Setting class variables of the spring arm
+	SpringArmComp->TargetArmLength = 400.f;
 	SpringArmComp->bUsePawnControlRotation = true;
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(-50.0f, 0.0f, 50.0f), FRotator(0.0f, 0.0f, 0.0f));
 
-	//	Setting class variables of the Character movement component.
+	//Setting class variables of the Character movement component
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->bIgnoreBaseRotation = true;
-
 }
 
 // Called when the game starts or when spawned
