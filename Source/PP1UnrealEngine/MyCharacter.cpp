@@ -14,18 +14,22 @@ AMyCharacter::AMyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	//	Instantiating class Components
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 
 	//	Set the location and rotation of the Character Mesh Transform
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FQuat(FRotator(0.0f, -90.0f, 0.0f)));
 
-
-	// Attaching your class Components to the default character's Skeletal Mesh Component.
+	// Attaching the class Components to the default character's Skeletal Mesh Component.
 	SpringArmComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 
-	//	Setting class variables of the Spring Arm
+	//	Setting class variables of the spring arm
 	SpringArmComp->bUsePawnControlRotation = true;
+
+	//	Setting class variables of the Character movement component.
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->bIgnoreBaseRotation = true;
 
 }
 
@@ -38,7 +42,7 @@ void AMyCharacter::BeginPlay()
 
 void AMyCharacter::MoveForward(float InputAxis)
 {
-	if ((Controller != nullptr) && InputAxis != 0.0f)
+	if ((Controller != nullptr) && (InputAxis != 0.0f))
 	{
 		// Find out which way is forward
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -59,7 +63,7 @@ void AMyCharacter::MoveRight(float InputAxis)
 	{
 		// Find out which way is right.
 		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		//	Get the right vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
@@ -67,6 +71,26 @@ void AMyCharacter::MoveRight(float InputAxis)
 		// Add movement in that direction
 		AddMovementInput(Direction, InputAxis);
 	}
+}
+
+void AMyCharacter::BeginSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+}
+
+void AMyCharacter::EndSprint()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+}
+
+void AMyCharacter::BeginCrouch()
+{
+	Crouch();
+}
+
+void AMyCharacter::EndCrouch()
+{
+	UnCrouch();
 }
 
 // Called every frame
@@ -82,10 +106,16 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("Forward", this, &AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("Right", this, &AMyCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMyCharacter::BeginCrouch);
+	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMyCharacter::EndCrouch);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMyCharacter::BeginSprint);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMyCharacter::EndSprint);
 
 }
 

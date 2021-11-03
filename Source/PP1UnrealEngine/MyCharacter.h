@@ -25,14 +25,27 @@ protected:
 	//	Called for left/right side input
 	void MoveRight(float InputAxis);
 
-	//Spring Arm Component to follow the camera behind the player
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class USpringArmComponent* SpringArmComp;
+	//	Sets Character Movement Speed to Sprint values.
+	void BeginSprint();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	class UCameraComponent* CameraComp;
+	//	Sets Character Movement Speed to default speed values.
+	void EndSprint();
 
-public:	
+	//	Request for Character to Crouch.
+	void BeginCrouch();
+
+	//	Request for Character to EndCrouch
+	void EndCrouch();
+
+	//	Spring Arm Component to follow the camera behind the player
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class USpringArmComponent* SpringArmComp;
+
+	//	Player follow camera
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		class UCameraComponent* CameraComp;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
