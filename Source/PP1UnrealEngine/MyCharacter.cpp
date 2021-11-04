@@ -25,9 +25,9 @@ AMyCharacter::AMyCharacter()
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 
 	//Setting class variables of the spring arm
-	SpringArmComp->TargetArmLength = 400.f;
+	SpringArmComp->TargetArmLength = 300.f;
 	SpringArmComp->bUsePawnControlRotation = true;
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(-50.0f, 0.0f, 50.0f), FRotator(0.0f, 0.0f, 0.0f));
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 265.0f), FRotator(0.0f, 0.0f, 0.0f));
 
 	//Setting class variables of the Character movement component
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -95,6 +95,50 @@ void AMyCharacter::EndCrouch()
 	UnCrouch();
 }
 
+void AMyCharacter::Fire()
+{
+	//	Attempt to fire a projectile
+	if (ProjectileClass)
+	{
+		//	Gets the camera transform.
+		FVector CameraLocation;
+		FRotator CameraRotation;
+
+		//	GetActorEyesViewPoint documentation:
+		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/GameFramework/AActor/GetActorEyesViewPoint/
+		GetActorEyesViewPoint(CameraLocation, CameraRotation);
+
+		//	Sets MuzzleOffset. Leaving it at the guide's offset of 100.0f in front of the camera(?) for now.
+		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
+
+		// Transform MuzzleOffset from camera space to world space.
+		//	FTransform documentation: https://docs.unrealengine.com/4.27/en-US/API/Runtime/Core/Math/FTransform/
+		FVector MuzzleLocation = CameraLocation = FTransform(CameraRotation).TransformVector(MuzzleOffset);
+
+		//	Skews the aim.
+		FRotator MuzzleRotation = CameraRotation;
+		//MuzzleRotation.Pitch += 10.0f;
+
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/Engine/FActorSpawnParameters/Instigator/
+
+			//	Spawn the projectile at the set position. (Preferably the muzzle)
+			AShooterProjectile* Projectile = World->SpawnActor<AShooterProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+
+			if (Projectile)
+			{
+				//	Set the projectile's initial trajectory.
+				FVector LaunchDirection = MuzzleRotation.Vector();
+				Projectile->FireInDirection(LaunchDirection);
+			}
+		}
+	}
+}
+
 // Called every frame
 void AMyCharacter::Tick(float DeltaTime)
 {
@@ -118,6 +162,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Crouch", IE_Released, this, &AMyCharacter::EndCrouch);
 	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMyCharacter::BeginSprint);
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMyCharacter::EndSprint);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyCharacter::Fire);
 
 }
 

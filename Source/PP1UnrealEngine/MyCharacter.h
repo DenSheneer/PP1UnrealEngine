@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "ShooterProjectile.h"
 #include "MyCharacter.generated.h"
 
 UCLASS()
@@ -34,8 +35,12 @@ protected:
 	//	Request for Character to Crouch.
 	void BeginCrouch();
 
-	//	Request for Character to EndCrouch
+	//	Request for Character to EndCrouch.
 	void EndCrouch();
+
+	//	Fires projectile.
+	UFUNCTION()
+	void Fire();
 
 	//	Spring Arm Component to follow the camera behind the player
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -44,6 +49,15 @@ protected:
 	//	Player follow camera
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UCameraComponent* CameraComp;
+
+	//	Gun muzzle offset from the camera location.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		FVector MuzzleOffset;
+
+	//	Projectile class to spawn.
+	//	https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TSubclassOf/
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AShooterProjectile> ProjectileClass;
 
 public:
 	// Called every frame
