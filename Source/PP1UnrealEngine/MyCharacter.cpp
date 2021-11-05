@@ -120,7 +120,7 @@ void AMyCharacter::Fire()
 		FVector MuzzleLocation = CameraLocation;
 
 		//	Skews the aim.
-		FRotator MuzzleRotation = CameraRotation;
+		FRotator MuzzleRotation = CameraRotation;		
 		MuzzleRotation.Pitch -= 10.0f;		// 10.0f is the angle I set in the editor for the camera component.
 
 		UWorld* World = GetWorld();
