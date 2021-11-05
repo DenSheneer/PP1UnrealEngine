@@ -9,14 +9,43 @@ AShooterProjectile::AShooterProjectile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//	Setting up all the components.
+	setupRootComponent();
+	setupCollisionComponent();
+	setupProjectileMovementComponent();
+	setupProjectileMeshComponent();
+	
+	//	Delete the projectile after 3 seconds.
+	InitialLifeSpan = lifeSpan;
+}
+
+// Called when the game starts or when spawned
+void AShooterProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	
+}
+
+void AShooterProjectile::setupRootComponent()
+{
 	if (!RootComponent)
 	{
 		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
 	}
+}
+
+void AShooterProjectile::setupCollisionComponent()
+{
 	if (!CollisionComponent)
 	{
 		//	Use a sphere as a simple collision representation.
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+
+		//	Set the sphere's collision component profile to "Projectile".
+		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("projectile"));
+
+		//	Even called when component hits something
+		CollisionComponent->OnComponentHit.AddDynamic(this, &AShooterProjectile::OnHit);
 
 		//	Setting the radius.
 		CollisionComponent->InitSphereRadius(15.0f);
@@ -24,6 +53,10 @@ AShooterProjectile::AShooterProjectile()
 		//	Setting the root component to be the sphere component.
 		RootComponent = CollisionComponent;
 	}
+}
+
+void AShooterProjectile::setupProjectileMovementComponent()
+{
 	if (!ProjectileMovementComponent)
 	{
 		//	Use this component to drive this projectile's movement.
@@ -36,16 +69,20 @@ AShooterProjectile::AShooterProjectile()
 		ProjectileMovementComponent->Bounciness = 0.3f;
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
+}
+
+void AShooterProjectile::setupProjectileMeshComponent()
+{
 	if (!ProjectileMeshComponent)
 	{
 		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
 		//	In the editor: right-click the static mesh -> 'copy reference'
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("'/Game/Sphere.Sphere'"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("'/Game/Meshes/Sphere.Sphere'"));
 		if (Mesh.Succeeded())
 		{
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
-		static ConstructorHelpers::FObjectFinder<UMaterialInstanceDynamic>Material(TEXT("'/Game/Materials/Red.Red'"));
+		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("'/Game/Materials/Red.Red'"));
 		if (Material.Succeeded())
 		{
 			ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
@@ -55,14 +92,9 @@ AShooterProjectile::AShooterProjectile()
 		ProjectileMeshComponent->SetupAttachment(RootComponent);
 
 		//	SetupAttachent documentation: https://docs.unrealengine.com/4.26/en-US/API/Runtime/Engine/Components/USceneComponent/SetupAttachment/
-	}
-}
 
-// Called when the game starts or when spawned
-void AShooterProjectile::BeginPlay()
-{
-	Super::BeginPlay();
-	
+
+	}
 }
 
 // Called every frame
@@ -77,5 +109,16 @@ void AShooterProjectile::Tick(float DeltaTime)
 void AShooterProjectile::FireInDirection(const FVector& ShootDirection)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+}
+
+//	Function that is called when the projectile hits something
+void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
+	{
+		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+	}
+
+	Destroy();
 }
 

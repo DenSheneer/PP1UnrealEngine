@@ -101,23 +101,27 @@ void AMyCharacter::Fire()
 	if (ProjectileClass)
 	{
 		//	Gets the camera transform.
-		FVector CameraLocation;
-		FRotator CameraRotation;
+		FVector CameraLocation = GetMesh()->GetComponentLocation();
+		FRotator CameraRotation = GetMesh()->GetComponentRotation();
+
+		//UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("rotation: %s"), *CameraRotation.ToString());
 
 		//	GetActorEyesViewPoint documentation:
 		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/GameFramework/AActor/GetActorEyesViewPoint/
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-		//	Sets MuzzleOffset. Leaving it at the guide's offset of 100.0f in front of the camera(?) for now.
+		//	Sets MuzzleOffset. Leaving it at the guide's offset of 100.0f in front of the camera for now.
 		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
 
 		// Transform MuzzleOffset from camera space to world space.
 		//	FTransform documentation: https://docs.unrealengine.com/4.27/en-US/API/Runtime/Core/Math/FTransform/
-		FVector MuzzleLocation = CameraLocation = FTransform(CameraRotation).TransformVector(MuzzleOffset);
+		//	FVector MuzzleLocation = CameraLocation = FTransform(CameraRotation).TransformVector(MuzzleOffset);		//	from the fps game guide
+		FVector MuzzleLocation = CameraLocation;
 
 		//	Skews the aim.
 		FRotator MuzzleRotation = CameraRotation;
-		//MuzzleRotation.Pitch += 10.0f;
+		MuzzleRotation.Pitch -= 10.0f;		// 10.0f is the angle I set in the editor for the camera component.
 
 		UWorld* World = GetWorld();
 		if (World)

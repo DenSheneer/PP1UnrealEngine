@@ -21,6 +21,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void setupRootComponent();
+	void setupCollisionComponent();
+	void setupProjectileMovementComponent();
+	void setupProjectileMeshComponent();
+
+	const float lifeSpan = 2.0f;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -44,5 +51,9 @@ public:
 
 	//	This function will be responsible for launching the projectile.
 	//	It initializes the projectile's velocity in the shoot direction.
-	void FireInDirection(const FVector& ShootDirection);		
+	void FireInDirection(const FVector& ShootDirection);
+
+	//	Function that is called when the projectile hits something.
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
