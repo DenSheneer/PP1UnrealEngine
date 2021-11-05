@@ -116,6 +116,7 @@ void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 {
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
+		//	apply effects to other collider.
 		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 	}
 
