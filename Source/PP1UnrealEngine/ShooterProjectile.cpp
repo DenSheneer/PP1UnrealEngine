@@ -2,6 +2,7 @@
 
 
 #include "ShooterProjectile.h"
+#include "HitableObject.h"
 
 // Sets default values
 AShooterProjectile::AShooterProjectile()
@@ -117,7 +118,12 @@ void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
 	{
 		//	apply effects to other collider.
-		OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		AHitableObject* hitActor = Cast<AHitableObject>(OtherActor);
+		if (hitActor && hitActor->IsHitable)
+		{
+			hitActor->OnTakeHit(Cast<AActor>(this));
+		}
 	}
 
 	Destroy();
