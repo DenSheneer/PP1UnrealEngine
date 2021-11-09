@@ -15,6 +15,19 @@ AMyCharacter::AMyCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 
+	//if (!MuzzlePositionMesh && weaponSocket)
+	//{
+	//	MuzzlePositionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzlePositionMesh"));
+	//	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh_(TEXT("'/Game/Meshes/Sphere.Sphere'"));
+	//	if (Mesh_.Succeeded())
+	//	{
+	//		MuzzlePositionMesh->SetStaticMesh(Mesh_.Object);
+	//	}
+	//	MuzzlePositionMesh->SetRelativeScale3D(FVector(0.02f, 0.02f, 0.02f));
+	//	MuzzlePositionMesh->SetRelativeLocation(GetMesh()->GetSocketByName(FName("ShootNuzzle"))->GetSocketLocation());
+	//	MuzzlePositionMesh->SetupAttachment(this->GetMesh());
+	//}
+
 	//Set the location and rotation of the Character Mesh Transform
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FQuat(FRotator(0.0f, -90.0f, 0.0f)));
 
@@ -102,24 +115,21 @@ void AMyCharacter::Fire()
 		FVector CameraLocation = GetMesh()->GetComponentLocation();
 		FRotator CameraRotation = GetMesh()->GetComponentRotation();
 
-		//UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
 		//UE_LOG(LogTemp, Warning, TEXT("rotation: %s"), *CameraRotation.ToString());
 
 		//	GetActorEyesViewPoint documentation:
 		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/GameFramework/AActor/GetActorEyesViewPoint/
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-		//	Sets MuzzleOffset. Leaving it at the guide's offset of 100.0f in front of the camera for now.
-		MuzzleOffset.Set(100.0f, 0.0f, 0.0f);
-
 		// Transform MuzzleOffset from camera space to world space.
-		//	FTransform documentation: https://docs.unrealengine.com/4.27/en-US/API/Runtime/Core/Math/FTransform/
-		//	FVector MuzzleLocation = CameraLocation = FTransform(CameraRotation).TransformVector(MuzzleOffset);		//	from the fps game guide
-		FVector MuzzleLocation = CameraLocation;
+		//	FTransform documentation: https://docs.unrealengine.com/4.27/en-US/API/Runtime/Core/Math/FTransform/		
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_l");
+		//FVector MuzzleLocation = CameraLocation;
 
 		//	Skews the aim.
 		FRotator MuzzleRotation = CameraRotation;		
-		MuzzleRotation.Pitch -= 10.0f;		// 10.0f is the angle I set in the editor for the camera component.
+		//MuzzleRotation.Pitch -= 10.0f;		// 10.0f is the angle I set in the editor for the camera component.
 
 		UWorld* World = GetWorld();
 		if (World)
