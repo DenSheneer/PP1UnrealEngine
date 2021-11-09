@@ -26,7 +26,7 @@ protected:
 	void setupProjectileMovementComponent();
 	void setupProjectileMeshComponent();
 
-	const float lifeSpan = 2.0f;
+	const float lifeSpan = 20.0f;
 
 public:
 	// Called every frame
