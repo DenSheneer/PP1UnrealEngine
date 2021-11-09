@@ -2,8 +2,11 @@
 
 #include "MyCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include <Kismet/KismetMathLibrary.h>
+#include <DrawDebugHelpers.h>
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -14,19 +17,6 @@ AMyCharacter::AMyCharacter()
 	// Instantiating your class Components
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComp"));
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
-
-	//if (!MuzzlePositionMesh && weaponSocket)
-	//{
-	//	MuzzlePositionMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MuzzlePositionMesh"));
-	//	static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh_(TEXT("'/Game/Meshes/Sphere.Sphere'"));
-	//	if (Mesh_.Succeeded())
-	//	{
-	//		MuzzlePositionMesh->SetStaticMesh(Mesh_.Object);
-	//	}
-	//	MuzzlePositionMesh->SetRelativeScale3D(FVector(0.02f, 0.02f, 0.02f));
-	//	MuzzlePositionMesh->SetRelativeLocation(GetMesh()->GetSocketByName(FName("ShootNuzzle"))->GetSocketLocation());
-	//	MuzzlePositionMesh->SetupAttachment(this->GetMesh());
-	//}
 
 	//Set the location and rotation of the Character Mesh Transform
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -90.0f), FQuat(FRotator(0.0f, -90.0f, 0.0f)));
@@ -115,21 +105,32 @@ void AMyCharacter::Fire()
 		FVector CameraLocation = GetMesh()->GetComponentLocation();
 		FRotator CameraRotation = GetMesh()->GetComponentRotation();
 
-		UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
 		//UE_LOG(LogTemp, Warning, TEXT("rotation: %s"), *CameraRotation.ToString());
 
 		//	GetActorEyesViewPoint documentation:
 		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/GameFramework/AActor/GetActorEyesViewPoint/
 		GetActorEyesViewPoint(CameraLocation, CameraRotation);
 
-		// Transform MuzzleOffset from camera space to world space.
-		//	FTransform documentation: https://docs.unrealengine.com/4.27/en-US/API/Runtime/Core/Math/FTransform/		
-		FVector MuzzleLocation = GetMesh()->GetSocketLocation("hand_l");
-		//FVector MuzzleLocation = CameraLocation;
+		//	Gets left hand socket's location and adds the muzzle offset to it. (offset is set in the editor)
+		FVector MuzzleLocation = GetMesh()->GetSocketLocation("spine_01") + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 
-		//	Skews the aim.
-		FRotator MuzzleRotation = CameraRotation;		
-		//MuzzleRotation.Pitch -= 10.0f;		// 10.0f is the angle I set in the editor for the camera component.
+		//	Determine where the projectile is aimed towards
+		FVector outLocation;
+		FRotator outRotation;
+
+		//	Get camera's location and rotation and store it in the out- values.
+		GetController()->GetPlayerViewPoint(outLocation, outRotation);
+
+		//	Calculate the end point by multiplying the camera's rotation by the zero distance, adding that to the start position.
+		FVector Start = outLocation;
+		FVector HitEnd = Start + outRotation.Vector() * ZeroDistance;
+
+		//	Visualize the line with a debug drawer.
+		DrawDebugLine(GetWorld(), MuzzleLocation, HitEnd, FColor::Green, false, 1, 0, 1);
+
+		FRotator MuzzleRotation = CameraRotation;
+
 
 		UWorld* World = GetWorld();
 		if (World)
@@ -138,13 +139,14 @@ void AMyCharacter::Fire()
 			SpawnParams.Owner = this;
 			SpawnParams.Instigator = GetInstigator();		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/Engine/FActorSpawnParameters/Instigator/
 
-			//	Spawn the projectile at the set position. (Preferably the muzzle)
+			//	Spawn the projectile at the set position.
 			AShooterProjectile* Projectile = World->SpawnActor<AShooterProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
 
 			if (Projectile)
 			{
-				//	Set the projectile's initial trajectory.
-				FVector LaunchDirection = MuzzleRotation.Vector();
+				//	Set the projectile's initial trajectory.				
+				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, HitEnd);
+				UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
 				Projectile->FireInDirection(LaunchDirection);
 			}
 		}

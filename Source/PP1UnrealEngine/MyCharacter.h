@@ -40,7 +40,7 @@ protected:
 
 	//	Fires projectile.
 	UFUNCTION()
-	void Fire();
+		void Fire();
 
 	//	Spring Arm Component to follow the camera behind the player
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -53,6 +53,9 @@ protected:
 	//	Gun muzzle offset from the camera location.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 		FVector MuzzleOffset;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+		float ZeroDistance = 2000.0f;
 
 	//	Projectile class to spawn.
 	//	https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TSubclassOf/
