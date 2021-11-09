@@ -29,6 +29,6 @@ void AHitableObject::Tick(float DeltaTime)
 
 void AHitableObject::OnTakeHit(AActor* thisInstigator)
 {
-	MeshComponent->AddImpulseAtLocation(thisInstigator->GetVelocity() * 300.0f, thisInstigator->GetActorLocation());
+	MeshComponent->AddImpulseAtLocation(thisInstigator->GetVelocity() * 30.0f, thisInstigator->GetActorLocation());
 }
 
