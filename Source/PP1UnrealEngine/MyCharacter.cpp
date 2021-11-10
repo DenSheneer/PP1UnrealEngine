@@ -116,6 +116,7 @@ void AMyCharacter::Fire()
 		FVector MuzzleLocation = GetMesh()->GetSocketLocation("spine_01") + FTransform(CameraRotation).TransformVector(MuzzleOffset);
 
 		//	Determine where the projectile is aimed towards
+		FHitResult hit;
 		FVector outLocation;
 		FRotator outRotation;
 
@@ -123,11 +124,27 @@ void AMyCharacter::Fire()
 		GetController()->GetPlayerViewPoint(outLocation, outRotation);
 
 		//	Calculate the end point by multiplying the camera's rotation by the zero distance, adding that to the start position.
-		FVector Start = outLocation;
-		FVector HitEnd = Start + outRotation.Vector() * ZeroDistance;
+		FVector TraceStart = outLocation;
+		FVector TraceEnd = TraceStart + outRotation.Vector() * ZeroDistance;
+
+		//	Do a raycast to check if the recticle is aiming at an object.
+		FCollisionQueryParams Traceparams;
+		GetWorld()->LineTraceSingleByChannel(hit, TraceStart, TraceEnd, ECC_Visibility, Traceparams);
+
+		//	If the trace hits something, set the trace end to that distance.
+		float CheckedDistance;
+		if (hit.Distance > 0.0f) { CheckedDistance = hit.Distance; }
+		else { CheckedDistance = ZeroDistance; }
+
+		//	The new end point is calculated using the checked distance.
+		FVector checkedEnd = TraceStart + outRotation.Vector() * CheckedDistance;
+
 
 		//	Visualize the line with a debug drawer.
-		DrawDebugLine(GetWorld(), MuzzleLocation, HitEnd, FColor::Green, false, 1, 0, 1);
+		DrawDebugLine(GetWorld(), MuzzleLocation, checkedEnd, FColor::Green, false, 1, 0, 1);
+
+		//	Print the distance.
+		//UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), CheckedDistance);
 
 		FRotator MuzzleRotation = CameraRotation;
 
@@ -144,10 +161,11 @@ void AMyCharacter::Fire()
 
 			if (Projectile)
 			{
-				//	Set the projectile's initial trajectory.				
-				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, HitEnd);
-				UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
+				//	The projectile's trajectory is set using the calculated end point.				
+				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, checkedEnd);
 				Projectile->FireInDirection(LaunchDirection);
+
+				//UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
 			}
 		}
 	}
