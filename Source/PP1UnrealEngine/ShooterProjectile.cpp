@@ -43,9 +43,9 @@ void AShooterProjectile::setupCollisionComponent()
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 
 		//	Set the sphere's collision component profile to "Projectile".
-		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("projectile"));
+		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
 
-		//	Even called when component hits something
+		//	Event called when component hits something
 		CollisionComponent->OnComponentHit.AddDynamic(this, &AShooterProjectile::OnHit);
 
 		//	Setting the radius.
@@ -123,9 +123,8 @@ void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		if (hitActor && hitActor->IsHitable)
 		{
 			hitActor->OnTakeHit(Cast<AActor>(this));
+			Destroy();
 		}
 	}
-
-	Destroy();
 }
 

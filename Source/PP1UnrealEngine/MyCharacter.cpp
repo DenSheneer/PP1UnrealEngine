@@ -7,6 +7,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <DrawDebugHelpers.h>
+#include <GameFramework/Character.h>
+#include <Components/CapsuleComponent.h>
+#include <Components/BoxComponent.h>
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -129,7 +132,7 @@ void AMyCharacter::Fire()
 
 		//	Do a raycast to check if the recticle is aiming at an object.
 		FCollisionQueryParams Traceparams;
-		GetWorld()->LineTraceSingleByChannel(hit, TraceStart, TraceEnd, ECC_Visibility, Traceparams);
+		GetWorld()->LineTraceSingleByChannel(hit, TraceStart, TraceEnd, ECC_Pawn, Traceparams);
 
 		//	If the trace hits something, set the trace end to that distance.
 		float CheckedDistance;
