@@ -83,7 +83,7 @@ void AShooterProjectile::setupProjectileMeshComponent()
 		{
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
-		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("'/Game/Materials/Red.Red'"));
+		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("'/Game/Materials/Blue.Blue'"));
 		if (Material.Succeeded())
 		{
 			ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
@@ -107,7 +107,7 @@ void AShooterProjectile::Tick(float DeltaTime)
 
 //	This function initializes the projectile's velocity in the shoot direction.
 //	The initial speed is set in the class constructor.
-void AShooterProjectile::FireInDirection(const FVector& ShootDirection)
+void AShooterProjectile::FireInDirection(const FVector& ShootDirection, int ProjectileType)
 {
 	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
 }

@@ -17,6 +17,8 @@ public:
 	AMyCharacter();
 
 protected:
+	int LastPickupType = 1;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -166,7 +166,7 @@ void AMyCharacter::Fire()
 			{
 				//	The projectile's trajectory is set using the calculated end point.				
 				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, checkedEnd);
-				Projectile->FireInDirection(LaunchDirection);
+				Projectile->FireInDirection(LaunchDirection, LastPickupType);
 
 				//UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
 			}
@@ -203,15 +203,21 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::TakePickup(const int type)
 {
+	LastPickupType = type;
+
 	switch (type)
 	{
 	case 1:
-		UE_LOG(LogTemp, Warning, TEXT("1"));
+		UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
 		break;
 	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("2"));
+		UE_LOG(LogTemp, Warning, TEXT("picked up heart"));
+		break;
+	case 3:
+		UE_LOG(LogTemp, Warning, TEXT("picked up bolt"));
 		break;
 	default:
+		UE_LOG(LogTemp, Warning, TEXT("picked up something unknown"));
 		break;
 	}
 }

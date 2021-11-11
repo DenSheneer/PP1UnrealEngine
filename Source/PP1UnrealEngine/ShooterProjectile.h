@@ -43,17 +43,17 @@ public:
 
 	//	Projectile mesh
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	UStaticMeshComponent* ProjectileMeshComponent;
+		UStaticMeshComponent* ProjectileMeshComponent;
 
 	//	Projectile material
-	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
-	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	UPROPERTY(VisibleDefaultsOnly, Category = Material)
+		UMaterialInstanceDynamic* ProjectileMaterialInstance;
 
 	//	This function will be responsible for launching the projectile.
 	//	It initializes the projectile's velocity in the shoot direction.
-	void FireInDirection(const FVector& ShootDirection);
+	void FireInDirection(const FVector& ShootDirection, int ProjectileType);
 
 	//	Function that is called when the projectile hits something.
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
