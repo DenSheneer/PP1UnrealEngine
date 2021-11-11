@@ -201,3 +201,18 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+void AMyCharacter::TakePickup(const int type)
+{
+	switch (type)
+	{
+	case 1:
+		UE_LOG(LogTemp, Warning, TEXT("1"));
+		break;
+	case 2:
+		UE_LOG(LogTemp, Warning, TEXT("2"));
+		break;
+	default:
+		break;
+	}
+}
+

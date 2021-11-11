@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include <Components/SphereComponent.h>
 #include <Components/BoxComponent.h>
+#include <Particles/ParticleSystemComponent.h>
 #include "Pickup.generated.h"
 
 UCLASS()
@@ -26,14 +27,16 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, Category=Gameplay)
+	int thisPickupType = 1;
+
 	UPROPERTY(EditAnywhere)
 		USceneComponent* PickupRoot;
 
-	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* PickupMesh;
-
 	UPROPERTY(VisibleAnywhere)
-		UShapeComponent* PickupBox;
+		UShapeComponent* PickupCollider;
+
+	
 
 	UFUNCTION()
 	void OnPickup(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
