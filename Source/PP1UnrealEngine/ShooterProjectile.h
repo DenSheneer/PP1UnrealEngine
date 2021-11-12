@@ -26,11 +26,15 @@ protected:
 	void setupProjectileMovementComponent();
 	void setupProjectileMeshComponent();
 
-	const float lifeSpan = 20.0f;
+	FString yellowMaterialPath = "'/Game/Materials/Yellow.Yellow'";
+	FString redMaterialPath = "'/Game/Materials/Red.Red'";
+	FString blueMaterialPath = "'/Game/Materials/Blue.Blue'";
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void Init(int projectileType);
 
 	//	Sphere collision component
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
@@ -43,11 +47,15 @@ public:
 
 	//	Projectile mesh
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
-	UStaticMeshComponent* ProjectileMeshComponent;
+		UStaticMeshComponent* ProjectileMeshComponent;
 
 	//	Projectile material
-	UPROPERTY(VisibleDefaultsOnly, Category = Movement)
-	UMaterialInstanceDynamic* ProjectileMaterialInstance;
+	UPROPERTY(VisibleDefaultsOnly, Category = Material)
+		UMaterialInstanceDynamic* yellowMaterialInstance;
+	UPROPERTY(VisibleDefaultsOnly, Category = Material)
+		UMaterialInstanceDynamic* redMaterialInstance;
+	UPROPERTY(VisibleDefaultsOnly, Category = Material)
+		UMaterialInstanceDynamic* blueMaterialInstance;
 
 	//	This function will be responsible for launching the projectile.
 	//	It initializes the projectile's velocity in the shoot direction.
@@ -55,5 +63,5 @@ public:
 
 	//	Function that is called when the projectile hits something.
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };

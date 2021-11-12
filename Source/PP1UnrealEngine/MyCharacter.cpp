@@ -7,6 +7,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include <Kismet/KismetMathLibrary.h>
 #include <DrawDebugHelpers.h>
+#include <GameFramework/Character.h>
+#include <Components/CapsuleComponent.h>
+#include <Components/BoxComponent.h>
 
 // Sets default values
 AMyCharacter::AMyCharacter()
@@ -129,7 +132,7 @@ void AMyCharacter::Fire()
 
 		//	Do a raycast to check if the recticle is aiming at an object.
 		FCollisionQueryParams Traceparams;
-		GetWorld()->LineTraceSingleByChannel(hit, TraceStart, TraceEnd, ECC_Visibility, Traceparams);
+		GetWorld()->LineTraceSingleByChannel(hit, TraceStart, TraceEnd, ECC_Pawn, Traceparams);
 
 		//	If the trace hits something, set the trace end to that distance.
 		float CheckedDistance;
@@ -158,6 +161,7 @@ void AMyCharacter::Fire()
 
 			//	Spawn the projectile at the set position.
 			AShooterProjectile* Projectile = World->SpawnActor<AShooterProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			Projectile->Init(LastPickupType);
 
 			if (Projectile)
 			{
@@ -196,5 +200,26 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &AMyCharacter::EndSprint);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AMyCharacter::Fire);
 
+}
+
+void AMyCharacter::TakePickup(const int type)
+{
+	LastPickupType = type;
+
+	switch (type)
+	{
+	case 1:
+		UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
+		break;
+	case 2:
+		UE_LOG(LogTemp, Warning, TEXT("picked up heart"));
+		break;
+	case 3:
+		UE_LOG(LogTemp, Warning, TEXT("picked up bolt"));
+		break;
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("picked up something unknown"));
+		break;
+	}
 }
 
