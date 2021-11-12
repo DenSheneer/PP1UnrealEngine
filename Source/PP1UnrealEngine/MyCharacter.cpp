@@ -161,12 +161,13 @@ void AMyCharacter::Fire()
 
 			//	Spawn the projectile at the set position.
 			AShooterProjectile* Projectile = World->SpawnActor<AShooterProjectile>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParams);
+			Projectile->Init(LastPickupType);
 
 			if (Projectile)
 			{
 				//	The projectile's trajectory is set using the calculated end point.				
 				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, checkedEnd);
-				Projectile->FireInDirection(LaunchDirection, LastPickupType);
+				Projectile->FireInDirection(LaunchDirection);
 
 				//UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
 			}
