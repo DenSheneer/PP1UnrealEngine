@@ -22,7 +22,8 @@ APickup::APickup()
 	PickupCollider->SetGenerateOverlapEvents(true);
 	PickupCollider->SetWorldScale3D(FVector(1.0f, 1.0f, 1.0f));
 	PickupCollider->OnComponentHit.AddDynamic(this, &APickup::OnPickup);
-	PickupCollider->AttachToComponent(PickupRoot, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	//PickupCollider->AttachToComponent(PickupRoot, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	PickupCollider->SetupAttachment(PickupRoot);
 	PickupCollider->BodyInstance.SetCollisionProfileName(TEXT("Pickup"));
 }
 
