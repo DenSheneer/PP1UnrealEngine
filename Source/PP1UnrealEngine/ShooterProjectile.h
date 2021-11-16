@@ -26,6 +26,9 @@ protected:
 	void setupProjectileMovementComponent();
 	void setupProjectileMeshComponent();
 
+	int thisProjectileType;
+
+	FString defaultMaterialPath = "'/Game/StarterContent/Materials/M_Metal_Chrome.M_Metal_Chrome'";
 	FString yellowMaterialPath = "'/Game/Materials/Yellow.Yellow'";
 	FString redMaterialPath = "'/Game/Materials/Red.Red'";
 	FString blueMaterialPath = "'/Game/Materials/Blue.Blue'";
@@ -50,6 +53,8 @@ public:
 		UStaticMeshComponent* ProjectileMeshComponent;
 
 	//	Projectile material
+	UPROPERTY(VisibleDefaultsOnly, Category = Material)
+		UMaterialInstanceDynamic* defaultMaterialInstance;
 	UPROPERTY(VisibleDefaultsOnly, Category = Material)
 		UMaterialInstanceDynamic* yellowMaterialInstance;
 	UPROPERTY(VisibleDefaultsOnly, Category = Material)

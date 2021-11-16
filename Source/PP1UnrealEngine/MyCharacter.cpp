@@ -37,6 +37,8 @@ AMyCharacter::AMyCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->bIgnoreBaseRotation = true;
+
+	LastPickupType = 0;
 }
 
 // Called when the game starts or when spawned
@@ -144,7 +146,7 @@ void AMyCharacter::Fire()
 
 
 		//	Visualize the line with a debug drawer.
-		DrawDebugLine(GetWorld(), MuzzleLocation, checkedEnd, FColor::Green, false, 1, 0, 1);
+		//DrawDebugLine(GetWorld(), MuzzleLocation, checkedEnd, FColor::Green, false, 1, 0, 1);
 
 		//	Print the distance.
 		//UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), CheckedDistance);
@@ -208,6 +210,9 @@ void AMyCharacter::TakePickup(const int type)
 
 	switch (type)
 	{
+	case 0:
+		UE_LOG(LogTemp, Warning, TEXT("picked up default (somehow?)"));
+		break;
 	case 1:
 		UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
 		break;

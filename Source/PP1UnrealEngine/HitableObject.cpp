@@ -2,6 +2,7 @@
 
 
 #include "HitableObject.h"
+#include <TimerManager.h>
 
 // Sets default values
 AHitableObject::AHitableObject()
@@ -10,6 +11,7 @@ AHitableObject::AHitableObject()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	RootComponent = MeshComponent;
 
 }
 
@@ -27,8 +29,30 @@ void AHitableObject::Tick(float DeltaTime)
 
 }
 
-void AHitableObject::OnTakeHit(AActor* thisInstigator)
+bool AHitableObject::OnTakeHit(AActor* thisInstigator, int projectileType)
 {
-	MeshComponent->AddImpulseAtLocation(thisInstigator->GetVelocity() * 30.0f, thisInstigator->GetActorLocation());
+	if (projectileTypeVulnerability == 0 || projectileTypeVulnerability == projectileType)
+	{
+		MeshComponent->AddImpulseAtLocation(thisInstigator->GetVelocity() * 30.0f, thisInstigator->GetActorLocation());
+		if (IsDestructable)
+		{
+			if (UseTimer)
+			{
+				FTimerDelegate TimerDelegate;
+				TimerDelegate.BindLambda([&]
+					{
+						Destroy();
+					});
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, DeleteTimer, false);
+			}
+			else
+			{
+				Destroy();
+			}
+		}
+		return true;
+	}
+	return false;
 }
 

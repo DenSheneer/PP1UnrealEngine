@@ -24,10 +24,14 @@ AShooterProjectile::AShooterProjectile()
 
 void AShooterProjectile::Init(int projectileType)
 {
+	thisProjectileType = projectileType;
 	UMaterialInstanceDynamic* currentMaterial;
 
 	switch (projectileType)
 	{
+	case 0:
+		currentMaterial = defaultMaterialInstance;
+		break;
 	case 1:
 		currentMaterial = yellowMaterialInstance;
 		break;
@@ -38,7 +42,7 @@ void AShooterProjectile::Init(int projectileType)
 		currentMaterial = blueMaterialInstance;
 		break;
 	default:
-		currentMaterial = yellowMaterialInstance;
+		currentMaterial = defaultMaterialInstance;
 		break;
 	}
 
@@ -111,6 +115,12 @@ void AShooterProjectile::setupProjectileMeshComponent()
 		ProjectileMeshComponent->SetRelativeScale3D(FVector(0.09f, 0.09f, 0.09f));
 		ProjectileMeshComponent->SetupAttachment(RootComponent);
 
+		static ConstructorHelpers::FObjectFinder<UMaterial>defaultMat(*defaultMaterialPath);
+		if (defaultMat.Succeeded())
+		{
+			defaultMaterialInstance = UMaterialInstanceDynamic::Create(defaultMat.Object, ProjectileMeshComponent);
+		}
+
 		static ConstructorHelpers::FObjectFinder<UMaterial>yellow(*yellowMaterialPath);
 		if (yellow.Succeeded())
 		{
@@ -158,9 +168,9 @@ void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherA
 		//	apply effects to other collider.
 		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
 		AHitableObject* hitActor = Cast<AHitableObject>(OtherActor);
-		if (hitActor && hitActor->IsHitable)
+
+		if (hitActor->OnTakeHit(Cast<AActor>(this), thisProjectileType))
 		{
-			hitActor->OnTakeHit(Cast<AActor>(this));
 			Destroy();
 		}
 	}
