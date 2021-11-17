@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "ShooterProjectile.h"
+#include <Sound/SoundCue.h>
+#include <Components/AudioComponent.h>
 #include "MyCharacter.generated.h"
 
 UCLASS()
@@ -63,6 +65,16 @@ protected:
 	//	https://docs.unrealengine.com/4.27/en-US/ProgrammingAndScripting/ProgrammingWithCPP/UnrealArchitecture/TSubclassOf/
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AShooterProjectile> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Audio)
+		USoundCue* shootShoundcue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Audio)
+		USoundCue* pickupSoundcue;
+
+private:
+	UAudioComponent* shootAudioComponent;
+	UAudioComponent* pickupAudioComponent;
 
 public:
 	// Called every frame
