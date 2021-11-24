@@ -37,12 +37,39 @@ AMyCharacter::AMyCharacter()
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	GetCharacterMovement()->bIgnoreBaseRotation = true;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> shootSoundcueObject(TEXT("'/Game/Sounds/cue/pop_Cue.pop_Cue'"));
+	if (shootSoundcueObject.Succeeded())
+	{
+		shootShoundcue = shootSoundcueObject.Object;
+		shootAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("shootAudioComponent"));
+		shootAudioComponent->SetupAttachment(RootComponent);
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> pickupSoundObject(TEXT("'/Game/Sounds/cue/powerup_Cue.powerup_Cue'"));
+	if (pickupSoundObject.Succeeded())
+	{
+		pickupSoundcue = pickupSoundObject.Object;
+		pickupAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("pickupAudioComponent"));
+		pickupAudioComponent->SetupAttachment(RootComponent);
+	}
+
+	LastPickupType = 0;
 }
 
 // Called when the game starts or when spawned
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (shootShoundcue && shootAudioComponent)
+	{
+		shootAudioComponent->SetSound(shootShoundcue);
+	}
+	if (pickupSoundcue && pickupAudioComponent)
+	{
+		pickupAudioComponent->SetSound(pickupSoundcue);
+	}
 
 }
 
@@ -144,7 +171,7 @@ void AMyCharacter::Fire()
 
 
 		//	Visualize the line with a debug drawer.
-		DrawDebugLine(GetWorld(), MuzzleLocation, checkedEnd, FColor::Green, false, 1, 0, 1);
+		//DrawDebugLine(GetWorld(), MuzzleLocation, checkedEnd, FColor::Green, false, 1, 0, 1);
 
 		//	Print the distance.
 		//UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), CheckedDistance);
@@ -168,6 +195,7 @@ void AMyCharacter::Fire()
 				//	The projectile's trajectory is set using the calculated end point.				
 				FVector LaunchDirection = UKismetMathLibrary::GetDirectionUnitVector(MuzzleLocation, checkedEnd);
 				Projectile->FireInDirection(LaunchDirection);
+				shootAudioComponent->Play(0.0f);
 
 				//UE_LOG(LogTemp, Warning, TEXT("LaunchDirection: %s"), *LaunchDirection.ToString());
 			}
@@ -205,9 +233,13 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 void AMyCharacter::TakePickup(const int type)
 {
 	LastPickupType = type;
+	pickupAudioComponent->Play(0.2);
 
 	switch (type)
 	{
+	case 0:
+		UE_LOG(LogTemp, Warning, TEXT("picked up default (somehow?)"));
+		break;
 	case 1:
 		UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
 		break;

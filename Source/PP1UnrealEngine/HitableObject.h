@@ -10,8 +10,8 @@ UCLASS()
 class PP1UNREALENGINE_API AHitableObject : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AHitableObject();
 
@@ -23,13 +23,22 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+	UPROPERTY(EditAnywhere, Category = "hit")
+	int projectileTypeVulnerability = 0;
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	//	Boolean for making object hit able
+	//	Boolean for making object hitable
 	UPROPERTY(EditAnywhere, Category = "hit")
 		bool IsHitable = true;
+	UPROPERTY(EditAnywhere, Category = "hit")
+		bool IsDestructable = false;
+	UPROPERTY(EditAnywhere, Category = "hit")
+		bool UseTimer = false;
+	UPROPERTY(EditAnywhere, Category = "hit")
+		float DeleteTimer = 0.5f;
 
-		void OnTakeHit(AActor* thisInstigator);
+	bool OnTakeHit(AActor* thisInstigator, int projectileType);
 };
