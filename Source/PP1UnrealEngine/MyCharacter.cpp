@@ -128,15 +128,13 @@ void AMyCharacter::EndCrouch()
 
 void AMyCharacter::Fire()
 {
+	//UE_LOG(LogTemp, Warning, TEXT("rotation: %s"), *CameraRotation.ToString());
 	//	Attempt to fire a projectile
 	if (ProjectileClass)
 	{
 		//	Gets the camera transform.
 		FVector CameraLocation = GetMesh()->GetComponentLocation();
 		FRotator CameraRotation = GetMesh()->GetComponentRotation();
-
-		//UE_LOG(LogTemp, Warning, TEXT("location: %s"), *CameraLocation.ToString());
-		//UE_LOG(LogTemp, Warning, TEXT("rotation: %s"), *CameraRotation.ToString());
 
 		//	GetActorEyesViewPoint documentation:
 		//	https://docs.unrealengine.com/4.27/en-US/API/Runtime/Engine/GameFramework/AActor/GetActorEyesViewPoint/
@@ -201,6 +199,9 @@ void AMyCharacter::Fire()
 			}
 		}
 	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("ProjectileClass is NULL"));
+	}
 }
 
 // Called every frame
@@ -214,7 +215,6 @@ void AMyCharacter::Tick(float DeltaTime)
 void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 
 	PlayerInputComponent->BindAxis("Forward", this, &AMyCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("Right", this, &AMyCharacter::MoveRight);
@@ -238,19 +238,19 @@ void AMyCharacter::TakePickup(const int type)
 	switch (type)
 	{
 	case 0:
-		UE_LOG(LogTemp, Warning, TEXT("picked up default (somehow?)"));
+		//UE_LOG(LogTemp, Warning, TEXT("picked up default (somehow?)"));
 		break;
 	case 1:
-		UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
+		//UE_LOG(LogTemp, Warning, TEXT("picked up crystal"));
 		break;
 	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("picked up heart"));
+		//UE_LOG(LogTemp, Warning, TEXT("picked up heart"));
 		break;
 	case 3:
-		UE_LOG(LogTemp, Warning, TEXT("picked up bolt"));
+		//UE_LOG(LogTemp, Warning, TEXT("picked up bolt"));
 		break;
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("picked up something unknown"));
+		//UE_LOG(LogTemp, Warning, TEXT("picked up something unknown"));
 		break;
 	}
 }

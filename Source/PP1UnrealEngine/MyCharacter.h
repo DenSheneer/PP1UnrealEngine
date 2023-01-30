@@ -43,7 +43,7 @@ protected:
 	void EndCrouch();
 
 	//	Fires projectile.
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
 		void Fire();
 
 	//	Spring Arm Component to follow the camera behind the player

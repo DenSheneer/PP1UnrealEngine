@@ -18,6 +18,7 @@ void AFPSCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+
 }
 
 void AFPSCharacter::fireWeapon()

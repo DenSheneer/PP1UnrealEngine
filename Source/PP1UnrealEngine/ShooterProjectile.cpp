@@ -163,16 +163,23 @@ void AShooterProjectile::FireInDirection(const FVector& ShootDirection)
 //	Function that is called when the projectile hits something
 void AShooterProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor != this && OtherComponent->IsSimulatingPhysics())
+	if (OtherActor != this)
 	{
-		//	apply effects to other collider.
-		//OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		if (OtherComponent->IsSimulatingPhysics() )
+		{
+			//	apply effects to other collider.
+			OtherComponent->AddImpulseAtLocation(ProjectileMovementComponent->Velocity * 100.0f, Hit.ImpactPoint);
+		}
 		AHitableObject* hitActor = Cast<AHitableObject>(OtherActor);
 
-		if (hitActor->OnTakeHit(Cast<AActor>(this), thisProjectileType))
-		{
-			Destroy();
-		}
+			if (hitActor)
+			{
+				if (hitActor->projectileTypeVulnerability == thisProjectileType)
+				{
+					hitActor->Destroy();
+						this->Destroy();
+				}
+			}
 	}
 }
 

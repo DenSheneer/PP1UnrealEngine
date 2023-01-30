@@ -23,8 +23,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "hit")
-	int projectileTypeVulnerability = 0;
+
 
 public:
 	// Called every frame
@@ -39,6 +38,8 @@ public:
 		bool UseTimer = false;
 	UPROPERTY(EditAnywhere, Category = "hit")
 		float DeleteTimer = 0.5f;
+	UPROPERTY(EditAnywhere, Category = "hit")
+		int projectileTypeVulnerability = 0;
 
 	bool OnTakeHit(AActor* thisInstigator, int projectileType);
 };
