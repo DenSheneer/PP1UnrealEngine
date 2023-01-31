@@ -1,0 +1,42 @@
+8e3305c	Denise Gerrits	Mon Jan 30 15:11:57 2023 +0100	Fixes
+b5faaff	Denise	Wed Nov 24 13:47:25 2021 +0100	Merge branch 'gameplay' into myGame
+87cd7e4	Denise	Wed Nov 24 13:47:16 2021 +0100	Merge branch 'soundsFX' into gameplay
+289a922	Denise	Wed Nov 24 13:47:01 2021 +0100	added game over collider
+77c9155	Denise Gerrits	Wed Nov 17 14:04:52 2021 +0100	added some sounds
+761f58e	Denise Gerrits	Tue Nov 16 15:15:23 2021 +0100	Made a basic level
+0ceb225	Denise Gerrits	Tue Nov 16 12:58:23 2021 +0100	Merge branch 'startmenu' into myGame
+e13c52a	Denise Gerrits	Tue Nov 16 12:58:07 2021 +0100	Added pause menu. Improved menus by using mouse mode in blueprints
+e33950a	Denise Gerrits	Fri Nov 12 14:49:26 2021 +0100	added basic  start menu
+316f0a1	Denise Gerrits	Fri Nov 12 12:17:06 2021 +0100	Cleanup of myGame branch
+18cc4d8	Denise Gerrits	Fri Nov 12 11:21:22 2021 +0100	Merge branch 'pickups' into myGame
+4e2be51	Denise Gerrits	Fri Nov 12 11:21:06 2021 +0100	Merge branch 'cameraFix' into myGame
+011c1e7	Denise Gerrits	Fri Nov 12 11:20:18 2021 +0100	Merge branch 'switchableProjectiles' into pickups
+45013f8	Denise Gerrits	Fri Nov 12 11:19:58 2021 +0100	projectile colors now switch according to the last pickup's color.
+2e0dba9	Denise Gerrits	Thu Nov 11 15:12:01 2021 +0100	Added blueprints for pickup variants.
+021df9c	Denise Gerrits	Thu Nov 11 13:37:47 2021 +0100	Made it possible to have pickup variants. A variant can have different functionality based on their 'int ThisPickupType'.
+5acbdfb	Denise Gerrits	Thu Nov 11 11:46:46 2021 +0100	Finished first version of pickups
+476bfb3	Denise Gerrits	Wed Nov 10 11:45:51 2021 +0100	Merge branch 'myGame' into pickups
+7bc9ca7	Denise Gerrits	Wed Nov 10 11:45:08 2021 +0100	Merge branch 'myGame' into cameraFix
+cb099d8	Denise Gerrits	Wed Nov 10 11:44:47 2021 +0100	Merge branch 'cameraFix' into myGame
+22ebd44	Denise Gerrits	Wed Nov 10 11:44:22 2021 +0100	Improved aiming even more. Shooting now performs a raycast to check for in objects within the zero distance. If so, a new end point is determined and used for the trajectory calculation.
+4cf53e9	Denise Gerrits	Tue Nov 9 14:49:58 2021 +0100	Merge branch 'cameraFix' into myGame
+55f65aa	Denise Gerrits	Tue Nov 9 14:48:43 2021 +0100	Fixed aiming with camera. Projectiles now go towards recticle properly. Their zero distance can be set in the editor.
+e444da4	Denise Gerrits	Tue Nov 9 12:25:07 2021 +0100	improved the projectile spawn location using UE sockets.
+cae1bea	Denise Gerrits	Tue Nov 9 09:43:52 2021 +0100	push before checkout
+0069dec	Denise Gerrits	Fri Nov 5 14:39:51 2021 +0100	Merge branch 'main' into myGame
+c339106	Denise Gerrits	Fri Nov 5 14:38:13 2021 +0100	Collision functionality has been moved from projectile to the new hitableobject class
+d90610b	Denise Gerrits	Fri Nov 5 12:57:13 2021 +0100	Merge branch 'engineTryOut' into main
+658be67	Denise Gerrits	Fri Nov 5 12:53:41 2021 +0100	Merge branch 'myGame' into main
+1af0131	Denise Gerrits	Fri Nov 5 12:53:15 2021 +0100	commit before merge
+dea3b7d	Denise Gerrits	Fri Nov 5 12:15:00 2021 +0100	finished shooter projectile guide
+a729eef	Denise Gerrits	Thu Nov 4 14:47:01 2021 +0100	finished projectile class, collision is next
+4579fe2	Denise Gerrits	Thu Nov 4 12:22:12 2021 +0100	moved on from camera. Added a basic firing projectile. Still need to adjust it according to the right camera.
+771b8f7	Denise Gerrits	Wed Nov 3 15:14:50 2021 +0100	fixed camera anyway
+0fc5d55	Denise Gerrits	Wed Nov 3 14:13:07 2021 +0100	working moving character incl animation state machine. Camera not fully function, but do not want to waste more time on it
+eae1de3	Denise Gerrits	Tue Nov 2 16:18:26 2021 +0100	working on player movement
+eac7332	Denise Gerrits	Tue Nov 2 12:46:40 2021 +0100	working demo. -finished checking out blueprints for now
+978ff65	Denise Gerrits	Tue Nov 2 10:39:52 2021 +0100	working muzzle flash
+72d2027	Denise	Thu Oct 28 12:07:44 2021 +0200	added recticle, weapon mesh and the start of muzzle flash
+9194e3a	Denise	Thu Oct 28 09:50:30 2021 +0200	fixed bug that would always return a collision that was null
+f892e0b	Denise	Wed Oct 27 16:02:33 2021 +0200	tutorial level almost works...
+6aa80c7	Denise	Wed Oct 27 12:15:26 2021 +0200	initial files
